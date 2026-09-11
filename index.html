@@ -4,12 +4,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ecuador Interactivo - RA</title>
   
+  <!-- Librerías de A-Frame y MindAR -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
     body { margin: 0; overflow: hidden; }
     
+    /* Panel de navegación por regiones */
     #panel-regiones {
       position: absolute;
       bottom: 20px;
@@ -29,21 +31,25 @@
       color: white;
       cursor: pointer;
       box-shadow: 0px 4px 8px rgba(0,0,0,0.4);
+      transition: background 0.3s;
     }
 
-    #btn-costa { background-color: #f39c12; }
-    #btn-sierra { background-color: #e67e22; }
-    #btn-amazonia { background-color: #27ae60; }
+    /* Colores de los botones */
+    #btn-costa { background-color: #f39c12; } /* Naranja */
+    #btn-sierra { background-color: #e67e22; } /* Rojo-Naranja */
+    #btn-amazonia { background-color: #27ae60; } /* Verde */
   </style>
 </head>
 <body>
 
+  <!-- Panel de navegación -->
   <div id="panel-regiones">
     <button id="btn-costa" class="btn-region">Costa</button>
     <button id="btn-sierra" class="btn-region">Sierra</button>
     <button id="btn-amazonia" class="btn-region">Amazonía</button>
   </div>
 
+  <!-- Escena de Realidad Aumentada -->
   <a-scene 
     mindar-image="imageTargetSrc: ./targets.mind;" 
     color-space="sRGB" 
@@ -51,7 +57,14 @@
     vr-mode-ui="enabled: false" 
     device-orientation-permission-ui="enabled: false">
     
+    <!-- Carga de Archivos (Modelos 3D y Audios) -->
     <a-assets>
+      <!-- Modelos 3D (.glb) -->
+      <a-asset-item id="modelCosta" src="./costa.glb"></a-asset-item>
+      <a-asset-item id="modelSierra" src="./sierra.glb"></a-asset-item>
+      <a-asset-item id="modelAmazonia" src="./amazonia.glb"></a-asset-item>
+
+      <!-- Audios (.mp3 con mayúscula) -->
       <audio id="audioCosta" src="./Costa.mp3" preload="auto"></audio>
       <audio id="audioSierra" src="./Sierra.mp3" preload="auto"></audio>
       <audio id="audioAmazonia" src="./Amazonia.mp3" preload="auto"></audio>
@@ -59,25 +72,43 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+    <!-- Objetivo de Imagen (El Mapa) -->
     <a-entity mindar-image-target="targetIndex: 0" id="mapa-target">
       
-      <!-- COSTA (Esfera Amarilla) -->
-      <a-sphere position="-0.4 0 0.1" radius="0.1" color="#f1c40f"></a-sphere>
+      <!-- MODELO COSTA (Izquierda) -->
+      <a-entity id="entidadCosta"
+        gltf-model="#modelCosta" 
+        position="-0.4 0 0.1" 
+        scale="0.2 0.2 0.2" 
+        rotation="90 0 0">
+      </a-entity>
 
-      <!-- SIERRA (Pirámide Roja) -->
-      <a-cone position="0 0 0.1" radius-bottom="0.1" height="0.2" color="#e74c3c" rotation="90 0 0"></a-cone>
+      <!-- MODELO SIERRA (Centro - Cóndor/Montaña) -->
+      <a-entity id="entidadSierra"
+        gltf-model="#modelSierra" 
+        position="0 0 0.1" 
+        scale="0.2 0.2 0.2" 
+        rotation="90 0 0">
+      </a-entity>
 
-      <!-- AMAZONÍA (Cilindro Verde) -->
-      <a-cylinder position="0.4 0 0.1" radius="0.08" height="0.15" color="#2ecc71" rotation="90 0 0"></a-cylinder>
+      <!-- MODELO AMAZONÍA (Derecha) -->
+      <a-entity id="entidadAmazonia"
+        gltf-model="#modelAmazonia" 
+        position="0.4 0 0.1" 
+        scale="0.2 0.2 0.2" 
+        rotation="90 0 0">
+      </a-entity>
 
     </a-entity>
   </a-scene>
 
   <script>
+    // Referencias a los audios
     const audioCosta = document.getElementById('audioCosta');
     const audioSierra = document.getElementById('audioSierra');
     const audioAmazonia = document.getElementById('audioAmazonia');
 
+    // Función para detener todos los audios antes de reproducir uno nuevo
     function detenerTodosAudios() {
       audioCosta.pause();
       audioCosta.currentTime = 0;
@@ -87,6 +118,7 @@
       audioAmazonia.currentTime = 0;
     }
 
+    // Eventos para los botones
     document.getElementById('btn-costa').addEventListener('click', () => {
       detenerTodosAudios();
       audioCosta.play().catch(e => console.log(e));
@@ -102,6 +134,7 @@
       audioAmazonia.play().catch(e => console.log(e));
     });
 
+    // Detener audio si se pierde de vista el mapa
     const target = document.querySelector('#mapa-target');
     target.addEventListener("targetLost", () => {
       detenerTodosAudios();
