@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ecuador Interactivo - RA</title>
+  
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #btn-iniciar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <button id="btn-iniciar">Toca aquí para Activar Sonido</button>
+
+  <a-scene 
+    mindar-image="imageTargetSrc: ./targets.mind;" 
+    color-space="sRGB" 
+    renderer="colorManagement: true, physicallyCorrectLights" 
+    vr-mode-ui="enabled: false" 
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-assets>
+      <a-asset-item id="modelCosta" src="./costa.glb"></a-asset-item>
+      <a-asset-item id="modelSierra" src="./sierra.glb"></a-asset-item>
+      <a-asset-item id="modelAmazonia" src="./amazonia.glb"></a-asset-item>
+
+      <audio id="audioCosta" src="./Costa.mp3" preload="auto"></audio>
+      <audio id="audioSierra" src="./Sierra.mp3" preload="auto"></audio>
+      <audio id="audioAmazonia" src="./Amazonia.mp3" preload="auto"></audio>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0" id="mapa-target">
+      
+      <!-- COSTA -->
+      <a-entity id="entidadCosta"
+        gltf-model="#modelCosta" 
+        position="-0.35 0.1 0.1" 
+        scale="0.15 0.15 0.15" 
+        rotation="90 0 0">
+      </a-entity>
+
+      <!-- SIERRA -->
+      <a-entity id="entidadSierra"
+        gltf-model="#modelSierra" 
+        position="0 0 0.1" 
+        scale="0.15 0.15 0.15" 
+        rotation="90 0 0">
+      </a-entity>
+
+      <!-- AMAZONÍA -->
+      <a-entity id="entidadAmazonia"
+        gltf-model="#modelAmazonia" 
+        position="0.35 0.1 0.1" 
+        scale="0.15 0.15 0.15" 
+        rotation="90 0 0">
+      </a-entity>
+
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const btnIniciar = document.getElementById('btn-iniciar');
+    const audioCosta = document.getElementById('audioCosta');
+    const audioSierra = document.getElementById('audioSierra');
+    const audioAmazonia = document.getElementById('audioAmazonia');
+
+    btnIniciar.addEventListener('click', () => {
+      btnIniciar.style.display = 'none';
+    });
+
+    const target = document.querySelector('#mapa-target');
+
+    target.addEventListener("targetFound", () => {
+      audioCosta.play().catch(e => console.log(e));
+    });
+
+    target.addEventListener("targetLost", () => {
+      audioCosta.pause();
+      audioSierra.pause();
+      audioAmazonia.pause();
+    });
+  </script>
+</body>
+</html>
