@@ -65,40 +65,49 @@
 
     <a-entity mindar-image-target="targetIndex: 0" id="mapa-target">
       
-      <!-- REGIONAL COSTA (Amarillo) -->
-      <a-entity id="grupoCosta" visible="false">
-        <a-plane position="-0.35 0 0.01" width="0.3" height="0.8" color="#f1c40f" opacity="0.45"></a-plane>
-        <a-entity gltf-model="#modelCosta" position="-0.35 0 0.1" scale="0.2 0.2 0.2" rotation="90 0 0"></a-entity>
+      <!-- COSTA (Ubicado a la izquierda del mapa) -->
+      <a-entity id="entidadCosta"
+        gltf-model="#modelCosta" 
+        position="-0.35 0 0.1" 
+        scale="0.2 0.2 0.2" 
+        rotation="90 0 0"
+        visible="false">
       </a-entity>
 
-      <!-- REGIONAL SIERRA (Café/Rojo - Cordillera) -->
-      <a-entity id="grupoSierra" visible="false">
-        <a-plane position="0 0 0.01" width="0.25" height="0.8" color="#a93226" opacity="0.5"></a-plane>
-        <a-entity gltf-model="#modelSierra" position="0 0 0.1" scale="0.2 0.2 0.2" rotation="90 0 0"></a-entity>
+      <!-- SIERRA (Ubicado al centro/Cordillera) -->
+      <a-entity id="entidadSierra"
+        gltf-model="#modelSierra" 
+        position="0 0 0.1" 
+        scale="0.2 0.2 0.2" 
+        rotation="90 0 0"
+        visible="false">
       </a-entity>
 
-      <!-- REGIONAL AMAZONÍA (Verde) -->
-      <a-entity id="grupoAmazonia" visible="false">
-        <a-plane position="0.35 0 0.01" width="0.4" height="0.8" color="#27ae60" opacity="0.45"></a-plane>
-        <a-entity gltf-model="#modelAmazonia" position="0.35 0 0.1" scale="0.2 0.2 0.2" rotation="90 0 0"></a-entity>
+      <!-- AMAZONÍA (Ubicado a la derecha del mapa) -->
+      <a-entity id="entidadAmazonia"
+        gltf-model="#modelAmazonia" 
+        position="0.35 0 0.1" 
+        scale="0.2 0.2 0.2" 
+        rotation="90 0 0"
+        visible="false">
       </a-entity>
 
     </a-entity>
   </a-scene>
 
   <script>
-    const gCosta = document.getElementById('grupoCosta');
-    const gSierra = document.getElementById('grupoSierra');
-    const gAmazonia = document.getElementById('grupoAmazonia');
+    const modCosta = document.getElementById('entidadCosta');
+    const modSierra = document.getElementById('entidadSierra');
+    const modAmazonia = document.getElementById('entidadAmazonia');
 
     const audCosta = document.getElementById('audioCosta');
     const audSierra = document.getElementById('audioSierra');
     const audAmazonia = document.getElementById('audioAmazonia');
 
     function resetearTodo() {
-      gCosta.setAttribute('visible', 'false');
-      gSierra.setAttribute('visible', 'false');
-      gAmazonia.setAttribute('visible', 'false');
+      modCosta.setAttribute('visible', 'false');
+      modSierra.setAttribute('visible', 'false');
+      modAmazonia.setAttribute('visible', 'false');
 
       audCosta.pause(); audCosta.currentTime = 0;
       audSierra.pause(); audSierra.currentTime = 0;
@@ -107,19 +116,19 @@
 
     document.getElementById('btn-costa').addEventListener('click', () => {
       resetearTodo();
-      gCosta.setAttribute('visible', 'true');
+      modCosta.setAttribute('visible', 'true');
       audCosta.play().catch(e => console.log(e));
     });
 
     document.getElementById('btn-sierra').addEventListener('click', () => {
       resetearTodo();
-      gSierra.setAttribute('visible', 'true');
+      modSierra.setAttribute('visible', 'true');
       audSierra.play().catch(e => console.log(e));
     });
 
     document.getElementById('btn-amazonia').addEventListener('click', () => {
       resetearTodo();
-      gAmazonia.setAttribute('visible', 'true');
+      modAmazonia.setAttribute('visible', 'true');
       audAmazonia.play().catch(e => console.log(e));
     });
 
