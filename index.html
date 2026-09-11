@@ -10,7 +10,6 @@
   <style>
     body { margin: 0; overflow: hidden; }
     
-    /* Contenedor de botones para cambiar de región */
     #panel-regiones {
       position: absolute;
       bottom: 20px;
@@ -39,11 +38,10 @@
 </head>
 <body>
 
-  <!-- Panel de navegación por regiones -->
   <div id="panel-regiones">
-    <button id="btn-costa" class="btn-region">Escuchar Costa</button>
-    <button id="btn-sierra" class="btn-region">Escuchar Sierra</button>
-    <button id="btn-amazonia" class="btn-region">Escuchar Amazonía</button>
+    <button id="btn-costa" class="btn-region">Costa</button>
+    <button id="btn-sierra" class="btn-region">Sierra</button>
+    <button id="btn-amazonia" class="btn-region">Amazonía</button>
   </div>
 
   <a-scene 
@@ -54,10 +52,6 @@
     device-orientation-permission-ui="enabled: false">
     
     <a-assets>
-      <a-asset-item id="modelCosta" src="./costa.glb"></a-asset-item>
-      <a-asset-item id="modelSierra" src="./sierra.glb"></a-asset-item>
-      <a-asset-item id="modelAmazonia" src="./amazonia.glb"></a-asset-item>
-
       <audio id="audioCosta" src="./Costa.mp3" preload="auto"></audio>
       <audio id="audioSierra" src="./Sierra.mp3" preload="auto"></audio>
       <audio id="audioAmazonia" src="./Amazonia.mp3" preload="auto"></audio>
@@ -67,29 +61,14 @@
 
     <a-entity mindar-image-target="targetIndex: 0" id="mapa-target">
       
-      <!-- MODELO COSTA (Izquierda) -->
-      <a-entity id="entidadCosta"
-        gltf-model="#modelCosta" 
-        position="-0.4 0 0.1" 
-        scale="0.3 0.3 0.3" 
-        rotation="90 0 0">
-      </a-entity>
+      <!-- COSTA (Esfera Amarilla) -->
+      <a-sphere position="-0.4 0 0.1" radius="0.1" color="#f1c40f"></a-sphere>
 
-      <!-- MODELO SIERRA (Centro) -->
-      <a-entity id="entidadSierra"
-        gltf-model="#modelSierra" 
-        position="0 0 0.1" 
-        scale="0.3 0.3 0.3" 
-        rotation="90 0 0">
-      </a-entity>
+      <!-- SIERRA (Pirámide Roja) -->
+      <a-cone position="0 0 0.1" radius-bottom="0.1" height="0.2" color="#e74c3c" rotation="90 0 0"></a-cone>
 
-      <!-- MODELO AMAZONÍA (Derecha) -->
-      <a-entity id="entidadAmazonia"
-        gltf-model="#modelAmazonia" 
-        position="0.4 0 0.1" 
-        scale="0.3 0.3 0.3" 
-        rotation="90 0 0">
-      </a-entity>
+      <!-- AMAZONÍA (Cilindro Verde) -->
+      <a-cylinder position="0.4 0 0.1" radius="0.08" height="0.15" color="#2ecc71" rotation="90 0 0"></a-cylinder>
 
     </a-entity>
   </a-scene>
