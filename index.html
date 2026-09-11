@@ -8,10 +8,13 @@
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
 
+  <!-- Librería indispensable para reproducir animaciones de archivos .GLB -->
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+
   <style>
     body { margin: 0; overflow: hidden; }
     
-    /* Panel de navegación flotante */
+    /* Panel de botones inferior */
     #panel-regiones {
       position: absolute;
       bottom: 20px;
@@ -22,7 +25,6 @@
       gap: 10px;
     }
 
-    /* Estilo de los botones */
     .btn-region {
       padding: 12px 18px;
       border: none;
@@ -32,13 +34,11 @@
       color: white;
       cursor: pointer;
       box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
-      transition: background 0.3s;
     }
 
-    /* Colores por región */
-    #btn-costa { background-color: #f1c40f; color: #333; } /* Amarillo */
-    #btn-sierra { background-color: #a93226; }             /* Café/Rojo */
-    #btn-amazonia { background-color: #27ae60; }          /* Verde */
+    #btn-costa { background-color: #f1c40f; color: #333; }
+    #btn-sierra { background-color: #a93226; }
+    #btn-amazonia { background-color: #27ae60; }
   </style>
 </head>
 <body>
@@ -50,7 +50,6 @@
     <button id="btn-amazonia" class="btn-region">Amazonía</button>
   </div>
 
-  <!-- Escena de Realidad Aumentada -->
   <a-scene 
     mindar-image="imageTargetSrc: ./targets.mind;" 
     color-space="sRGB" 
@@ -58,12 +57,16 @@
     vr-mode-ui="enabled: false" 
     device-orientation-permission-ui="enabled: false">
     
-    <!-- Carga de Archivos (Imágenes PNG y Audios MP3) -->
     <a-assets>
-      <!-- Imágenes PNG (Importante que coincidan mayúsculas/minúsculas con tu GitHub) -->
+      <!-- Personas (Imágenes PNG) -->
       <img id="imgCosta" src="./Costa.png">
       <img id="imgSierra" src="./Sierra.png">
       <img id="imgAmazonia" src="./Amazonia.png">
+
+      <!-- Animales (Modelos 3D .GLB) -->
+      <a-asset-item id="glbCosta" src="./costa.glb"></a-asset-item>
+      <a-asset-item id="glbSierra" src="./sierra.glb"></a-asset-item>
+      <a-asset-item id="glbAmazonia" src="./amazonia.glb"></a-asset-item>
 
       <!-- Audios MP3 -->
       <audio id="audioCosta" src="./Costa.mp3" preload="auto"></audio>
@@ -73,80 +76,78 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Objetivo de Imagen (El Mapa Físico) -->
+    <!-- Target del Mapa Físico -->
     <a-entity mindar-image-target="targetIndex: 0" id="mapa-target">
       
-      <!-- IMAGEN COSTA (Flotando a la izquierda) -->
-      <a-image id="entidadCosta"
-        src="#imgCosta"
-        position="-0.35 0 0.1" 
-        width="0.7" height="0.8"
-        visible="false">
-      </a-image>
+      <!-- GRUPO COSTA (Persona PNG + Animal 3D GLB) -->
+      <a-entity id="grupoCosta" visible="false">
+        <!-- Persona Costa a la izquierda -->
+        <a-image src="#imgCosta" position="-0.4 0 0.1" width="0.5" height="0.65"></a-image>
+        <!-- Animal Costa 3D a la derecha con animación -->
+        <a-entity gltf-model="#glbCosta" animation-mixer position="0.1 -0.1 0.1" scale="0.3 0.3 0.3" rotation="0 0 0"></a-entity>
+      </a-entity>
 
-      <!-- IMAGEN SIERRA (Flotando al centro) -->
-      <a-image id="entidadSierra"
-        src="#imgSierra"
-        position="0 0 0.1" 
-        width="0.7" height="0.8"
-        visible="false">
-      </a-image>
+      <!-- GRUPO SIERRA (Persona PNG + Animal 3D GLB) -->
+      <a-entity id="grupoSierra" visible="false">
+        <!-- Persona Sierra a la izquierda -->
+        <a-image src="#imgSierra" position="-0.3 0 0.1" width="0.5" height="0.65"></a-image>
+        <!-- Animal Sierra 3D a la derecha con animación -->
+        <a-entity gltf-model="#glbSierra" animation-mixer position="0.2 0 0.1" scale="0.3 0.3 0.3" rotation="0 0 0"></a-entity>
+      </a-entity>
 
-      <!-- IMAGEN AMAZONÍA (Flotando a la derecha) -->
-      <a-image id="entidadAmazonia"
-        src="#imgAmazonia"
-        position="0.35 0 0.1" 
-        width="0.7" height="0.8"
-        visible="false">
-      </a-image>
+      <!-- GRUPO AMAZONÍA (Persona PNG + Animal 3D GLB) -->
+      <a-entity id="grupoAmazonia" visible="false">
+        <!-- Persona Amazonía a la izquierda -->
+        <a-image src="#imgAmazonia" position="-0.3 0 0.1" width="0.5" height="0.65"></a-image>
+        <!-- Animal Amazonía 3D a la derecha con animación -->
+        <a-entity gltf-model="#glbAmazonia" animation-mixer position="0.25 -0.1 0.1" scale="0.3 0.3 0.3" rotation="0 0 0"></a-entity>
+      </a-entity>
 
     </a-entity>
   </a-scene>
 
   <script>
-    // Referencias a los elementos de imagen de A-Frame
-    const imgCosta = document.getElementById('entidadCosta');
-    const imgSierra = document.getElementById('entidadSierra');
-    const imgAmazonia = document.getElementById('entidadAmazonia');
+    // Referencias a los grupos que contienen Persona + Animal
+    const grupoCosta = document.getElementById('grupoCosta');
+    const grupoSierra = document.getElementById('grupoSierra');
+    const grupoAmazonia = document.getElementById('grupoAmazonia');
 
-    // Referencias a los elementos de audio
+    // Referencias a los Audios
     const audCosta = document.getElementById('audioCosta');
     const audSierra = document.getElementById('audioSierra');
     const audAmazonia = document.getElementById('audioAmazonia');
 
-    // Función para ocultar todas las imágenes y detener todos los audios
+    // Apagar todo
     function resetearTodo() {
-      imgCosta.setAttribute('visible', 'false');
-      imgSierra.setAttribute('visible', 'false');
-      imgAmazonia.setAttribute('visible', 'false');
+      grupoCosta.setAttribute('visible', 'false');
+      grupoSierra.setAttribute('visible', 'false');
+      grupoAmazonia.setAttribute('visible', 'false');
 
       audCosta.pause(); audCosta.currentTime = 0;
       audSierra.pause(); audSierra.currentTime = 0;
       audAmazonia.pause(); audAmazonia.currentTime = 0;
     }
 
-    // Interacción Botón Costa
+    // Eventos de Click en Botones
     document.getElementById('btn-costa').addEventListener('click', () => {
       resetearTodo();
-      imgCosta.setAttribute('visible', 'true'); // Muestra la imagen de la Costa
-      audCosta.play().catch(e => console.log(e));  // Reproduce audio Costa
+      grupoCosta.setAttribute('visible', 'true');
+      audCosta.play().catch(e => console.log(e));
     });
 
-    // Interacción Botón Sierra
     document.getElementById('btn-sierra').addEventListener('click', () => {
       resetearTodo();
-      imgSierra.setAttribute('visible', 'true'); // Muestra la imagen de la Sierra
-      audSierra.play().catch(e => console.log(e)); // Reproduce audio Sierra
+      grupoSierra.setAttribute('visible', 'true');
+      audSierra.play().catch(e => console.log(e));
     });
 
-    // Interacción Botón Amazonía
     document.getElementById('btn-amazonia').addEventListener('click', () => {
       resetearTodo();
-      imgAmazonia.setAttribute('visible', 'true'); // Muestra la imagen de Amazonía
-      audAmazonia.play().catch(e => console.log(e)); // Reproduce audio Amazonía
+      grupoAmazonia.setAttribute('visible', 'true');
+      audAmazonia.play().catch(e => console.log(e));
     });
 
-    // Detener todo si la cámara pierde de vista el mapa
+    // Ocultar si la cámara pierde el objetivo
     const target = document.querySelector('#mapa-target');
     target.addEventListener("targetLost", () => {
       resetearTodo();
